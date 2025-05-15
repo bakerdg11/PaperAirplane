@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine;
@@ -14,17 +14,14 @@ public class PaperAirplaneController : MonoBehaviour
     public float launchForce = 20f;
     public float gravityStrength = 0.5f;
 
+    // Lane movement
+    public float laneOffset = 5.5f;
+    public float lateralMoveSpeed = 5.0f;
+    private float targetX = 0f;
 
-    // Flying Plane
-    public Button steerLeftButton;
-    public Button steerRightButton;
-
-    public float steerAmount = 10f;
-    public float steerReturnSpeed = 10f;
-
-    private float currentSteer = 0f;
-    private int steerDirection = 0;
-
+    public float maxBankAngle = 30f;
+    public float bankSpeed = 5f;
+    private float targetBankAngle = 0f;
 
 
 
@@ -34,8 +31,6 @@ public class PaperAirplaneController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
 
-        AddPointerEvents(steerLeftButton, StartSteerLeft, StopSteer);
-        AddPointerEvents(steerRightButton, StartSteerRight, StopSteer);
     }
 
 
@@ -53,43 +48,94 @@ public class PaperAirplaneController : MonoBehaviour
 
         if (launched)
         {
-            // Applying Gravity
+            // Apply gravity
             rb.velocity += Vector3.down * gravityStrength * Time.deltaTime;
 
-            // Smoothly steer left or right
-            currentSteer = Mathf.Lerp(currentSteer, steerDirection * steerAmount, Time.deltaTime * steerReturnSpeed);
+            // Smooth lane shifting
+            Vector3 position = transform.position;
+            float prevX = position.x;
+            position.x = Mathf.Lerp(position.x, targetX, lateralMoveSpeed * Time.deltaTime);
+            transform.position = position;
 
-            // Slight horizontal movement (local x-axis)
-            Vector3 sideways = transform.right * currentSteer;
-            rb.MovePosition(rb.position + sideways * Time.deltaTime);
+            // Calculate horizontal movement direction
+            float xMovement = position.x - prevX;
 
+            // Decide target bank angle based on movement
+            float movementThreshold = 0.01f;
+            if (xMovement > movementThreshold)
+            {
+                targetBankAngle = -maxBankAngle; // Moving right, bank right
+            }
+            else if (xMovement < -movementThreshold)
+            {
+                targetBankAngle = maxBankAngle; // Moving left, bank left
+            }
+            else
+            {
+                targetBankAngle = 0f; // Not moving, level out
+            }
+
+            // Smoothly rotate to target bank angle (Z-axis)
+            float currentZ = transform.rotation.eulerAngles.z;
+            if (currentZ > 180f) currentZ -= 360f;
+
+            float newZ = Mathf.Lerp(currentZ, targetBankAngle, bankSpeed * Time.deltaTime);
+            Quaternion targetRotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, newZ);
+            transform.rotation = targetRotation;
         }
 
     }
 
 
-
-    void AddPointerEvents(Button button, UnityAction onDown, UnityAction onUp)
+    public void MoveToLeftLane()
     {
-        EventTrigger trigger = button.gameObject.GetComponent<EventTrigger>();
-        if (trigger == null)
-            trigger = button.gameObject.AddComponent<EventTrigger>();
-
-        trigger.triggers = new List<EventTrigger.Entry>();
-
-        var pointerDown = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-        pointerDown.callback.AddListener((_) => onDown.Invoke());
-        trigger.triggers.Add(pointerDown);
-
-        var pointerUp = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
-        pointerUp.callback.AddListener((_) => onUp.Invoke());
-        trigger.triggers.Add(pointerUp);
+        targetX = -laneOffset;
+        targetBankAngle = maxBankAngle;
     }
 
-    // ?? These are the steering input methods being referenced
-    void StartSteerLeft() { steerDirection = -1; }
-    void StartSteerRight() { steerDirection = 1; }
-    void StopSteer() { steerDirection = 0; }
+    public void MoveToRightLane()
+    {
+        targetX = laneOffset;
+        targetBankAngle = -maxBankAngle;
+    }
+
+    public void MoveToCenterLane()
+    {
+        targetX = 0f;
+        targetBankAngle = 0f;
+    }
+
+
+
+
+    public void OnDoubleTap()
+    {
+
+    }
+    public void OnSwipeLeft()
+    {
+
+    }
+    public void OnSwipeRight()
+    {
+
+    }
+    public void OnSwipeUp()
+    {
+
+    }
+    public void OnSwipeDown()
+    {
+
+    }
+    public void OnTouchRelease()
+    {
+
+    }
+
+
+
+
 }
 
 
