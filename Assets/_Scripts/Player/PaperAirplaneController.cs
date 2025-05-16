@@ -150,6 +150,7 @@ public class PaperAirplaneController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        // Crashing on the ground
         if (collision.gameObject.CompareTag("Ground") && gravityActive)
         {
             Debug.Log("Plane Crashed");
