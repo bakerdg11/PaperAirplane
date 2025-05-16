@@ -12,6 +12,7 @@ public class PaperAirplaneController : MonoBehaviour
     // Plane Physics
     public bool launched = false;
     public float launchForce = 20f;
+    public bool gravityActive = false;
     public float gravityStrength = 0.5f;
 
     // Lane movement
@@ -22,6 +23,10 @@ public class PaperAirplaneController : MonoBehaviour
     public float maxBankAngle = 30f;
     public float bankSpeed = 5f;
     private float targetBankAngle = 0f;
+
+    // Energy System
+    public bool isHoldingLeft = false;
+    public bool isHoldingRight = false;
 
 
 
@@ -49,7 +54,11 @@ public class PaperAirplaneController : MonoBehaviour
         if (launched)
         {
             // Apply gravity
-            rb.velocity += Vector3.down * gravityStrength * Time.deltaTime;
+            if (gravityActive == true)
+            {
+                rb.velocity += Vector3.down * gravityStrength * Time.deltaTime;
+            }
+            
 
             // Smooth lane shifting
             Vector3 position = transform.position;
@@ -91,18 +100,22 @@ public class PaperAirplaneController : MonoBehaviour
     {
         targetX = -laneOffset;
         targetBankAngle = maxBankAngle;
+        isHoldingLeft = true;
     }
 
     public void MoveToRightLane()
     {
         targetX = laneOffset;
         targetBankAngle = -maxBankAngle;
+        isHoldingRight = true;
     }
 
     public void MoveToCenterLane()
     {
         targetX = 0f;
         targetBankAngle = 0f;
+        isHoldingLeft = false;
+        isHoldingRight= false;
     }
 
 
@@ -135,10 +148,20 @@ public class PaperAirplaneController : MonoBehaviour
 
 
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground") && gravityActive)
+        {
+            Debug.Log("Plane Crashed");
+            rb.velocity = Vector3.zero;
+            gravityActive = false;
+        }
+    }
+
+
+
+
+
+
 
 }
-
-
-
-
-
