@@ -4,10 +4,12 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
 
 public class PaperAirplaneController : MonoBehaviour
 {
     private Rigidbody rb;
+    public GameObject youCrashedPanel;
 
     // Plane Physics
     public bool launched = false;
@@ -156,6 +158,15 @@ public class PaperAirplaneController : MonoBehaviour
             Debug.Log("Plane Crashed");
             rb.velocity = Vector3.zero;
             gravityActive = false;
+            
+            if (youCrashedPanel != null)
+            {
+                youCrashedPanel.SetActive(true);
+            }
+            else
+            {
+                Debug.LogWarning("youCrashedPanel not assigned in inspector");
+            }
         }
     }
 
