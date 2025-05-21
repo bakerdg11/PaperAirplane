@@ -8,10 +8,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public Slider energySlider;
     public PaperAirplaneController airplaneController;
+    public float currency;
+    public float speed;
+    public float energy; // May not need, may only need energyDepletionRate
+    public float energyDepletionRate = 0.5f;
+    public Slider energySlider;
 
-    [HideInInspector] public float energyDepletionRate = 0.5f;
 
 
 

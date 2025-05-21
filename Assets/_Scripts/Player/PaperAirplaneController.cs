@@ -13,7 +13,7 @@ public class PaperAirplaneController : MonoBehaviour
 
     // Plane Physics
     public bool launched = false;
-    public float launchForce = 20f;
+    public float speed = 20f;
     public bool gravityActive = false;
     public float gravityStrength = 0.5f;
 
@@ -50,7 +50,7 @@ public class PaperAirplaneController : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && !launched)
         {
             launched = true;
-            rb.velocity = transform.forward * launchForce;
+            rb.velocity = transform.forward * speed;
         }
 
         if (launched)
