@@ -2,22 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UpgradesMenu : BaseMenu
+public class UpgradesMenu : MonoBehaviour
 {
-    private void Awake()
+    // Start is called before the first frame update
+    void Start()
     {
-        state = MenuController.MenuStates.Upgrades;
+        
     }
 
-    public override void EnterState()
+    // Update is called once per frame
+    void Update()
     {
-        base.EnterState();
-        Debug.Log("Upgrades menu opened");
-    }
-
-    public override void ExitState()
-    {
-        base.ExitState();
-        Debug.Log("Upgrades menu closed");
+        
     }
 }
