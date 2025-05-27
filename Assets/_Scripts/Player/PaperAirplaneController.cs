@@ -8,8 +8,11 @@ using UnityEngine.UIElements;
 
 public class PaperAirplaneController : MonoBehaviour
 {
+    public static PaperAirplaneController Instance;
+
     private Rigidbody rb;
-    public GameObject youCrashedPanel;
+    public GameObject hudMenu;
+    public GameObject crashedMenu;
 
     // Plane Physics
     public bool launched = false;
@@ -29,6 +32,13 @@ public class PaperAirplaneController : MonoBehaviour
     // Energy System
     public bool isHoldingLeft = false;
     public bool isHoldingRight = false;
+
+
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
 
 
@@ -156,17 +166,12 @@ public class PaperAirplaneController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground") && gravityActive)
         {
             Debug.Log("Plane Crashed");
+            Time.timeScale = 0f;
             rb.velocity = Vector3.zero;
             gravityActive = false;
-            
-            if (youCrashedPanel != null)
-            {
-                youCrashedPanel.SetActive(true);
-            }
-            else
-            {
-                Debug.LogWarning("youCrashedPanel not assigned in inspector");
-            }
+            launched = false;
+            PersistentMenuManager.Instance.OpenCrashMenu();
+
         }
     }
 

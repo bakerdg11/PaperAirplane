@@ -4,19 +4,23 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class PauseMenu : MonoBehaviour
+public class CrashedMenu : MonoBehaviour
 {
-    public Button resumeButton;
+    public Button playAgainButton;
     public Button settingsButton;
     public Button statisticsButton;
     public Button upgradeButton;
     public Button quitGameButton;
 
+    void Awake()
+    {
+
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        resumeButton.onClick.AddListener(OnResumeButtonPressed);
+        playAgainButton.onClick.AddListener(OnPlayAgainButtonPressed);
         settingsButton.onClick.AddListener(OnSettingsButtonPressed);
         statisticsButton.onClick.AddListener(OnStatisticsButtonPressed);
         upgradeButton.onClick.AddListener(OnUpgradesButtonPressed);
@@ -27,10 +31,9 @@ public class PauseMenu : MonoBehaviour
 
 
 
-    public void OnResumeButtonPressed()
+    public void OnPlayAgainButtonPressed()
     {
-        PersistentMenuManager.Instance.Back();
-        Time.timeScale = 1.0f;
+        Time.timeScale = 1f;
     }
 
     public void OnSettingsButtonPressed()
