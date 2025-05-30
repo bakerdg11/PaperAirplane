@@ -12,6 +12,8 @@ public class CrashedMenu : MonoBehaviour
     public Button upgradeButton;
     public Button quitGameButton;
 
+    public GameManager gameManager;
+
     void Awake()
     {
 
@@ -33,7 +35,7 @@ public class CrashedMenu : MonoBehaviour
 
     public void OnPlayAgainButtonPressed()
     {
-        Time.timeScale = 1f;
+        gameManager.RestartLevelScene();
     }
 
     public void OnSettingsButtonPressed()

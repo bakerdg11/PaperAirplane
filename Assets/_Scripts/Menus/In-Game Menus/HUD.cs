@@ -8,8 +8,8 @@ public class HUD : MonoBehaviour
 {
     public Button pauseButton;
 
-    public GameObject hud;
-    public GameObject pauseMenu;
+    public Button steerLeftButton;
+    public Button steerRightButton;
 
     // Start is called before the first frame update
     void Start()

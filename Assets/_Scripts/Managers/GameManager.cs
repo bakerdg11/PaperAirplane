@@ -8,14 +8,16 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+
+    [Header("Plane/Gameplay References")]
     public PaperAirplaneController airplaneController;
+    public Slider energySlider;
+
+    [Header("Gameplay Variables")]
     public float currency;
     public float speed;
     public float energy; // May not need, may only need energyDepletionRate
     public float energyDepletionRate = 0.5f;
-    public Slider energySlider;
-
-
 
 
     private void Awake()
@@ -35,52 +37,47 @@ public class GameManager : MonoBehaviour
     }
 
 
-    // This needs to include all the references that I put in the Game manager
-    // to ensure they are not null when you change scenes. 
+    // Needed to find the AirplaneController from Scene 2
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Find Energy Slider
-        GameObject sliderObj = GameObject.FindWithTag("EnergySlider");
-        
-        if (sliderObj != null)
-        {
-            energySlider = sliderObj.GetComponent<Slider>();
-        }
-        else
-        {
-            Debug.LogWarning("EnergySlider not found in scene.");
-        }
-
         airplaneController = FindObjectOfType<PaperAirplaneController>();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void RestartLevelScene()
     {
-        
+        if (PersistentMenuManager.Instance != null)
+        {
+            PersistentMenuManager.Instance.CloseAllMenus();
+        }
+
+        SceneManager.LoadScene("2.Level1", LoadSceneMode.Single);
+        Time.timeScale = 1f;
+
+        if (energySlider != null)
+        {
+            energySlider.value = 1f;
+        }
     }
+
 
     // Update is called once per frame
     void Update()
     {
+        if (airplaneController == null || energySlider == null) return;
+
         // Depleting energy bar
-        if (airplaneController != null && airplaneController.launched &&
+        if (airplaneController.launched &&
             (airplaneController.isHoldingLeft || airplaneController.isHoldingRight))
         {
-            if (energySlider != null)
-            {
-                energySlider.value -= energyDepletionRate * Time.deltaTime;
-                if (energySlider.value < 0) energySlider.value = 0;
-            }
+            energySlider.value -= energyDepletionRate * Time.deltaTime;
+            energySlider.value = Mathf.Max(energySlider.value, 0);
         }
-        // Energy bar depleted and gravity turned on to crash
-        if (energySlider != null && energySlider.value <= 0 && airplaneController != null)
+
+        // Energy Depleted. Enable Gravity
+        if (energySlider.value <= 0)
         {
-            airplaneController.gravityActive = true;
+            airplaneController.EnableGravity();
         }
     }
-
-
-
 
 }

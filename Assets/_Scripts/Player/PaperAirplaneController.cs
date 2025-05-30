@@ -9,17 +9,18 @@ using UnityEngine.UIElements;
 public class PaperAirplaneController : MonoBehaviour
 {
     public static PaperAirplaneController Instance;
+    public GameManager gameManager;
 
     private Rigidbody rb;
-    public GameObject hudMenu;
-    public GameObject crashedMenu;
 
+    [Header("Plane Physics")]
     // Plane Physics
     public bool launched = false;
-    public float speed = 20f;
+    public float speed = 10f;
     public bool gravityActive = false;
     public float gravityStrength = 0.5f;
 
+    [Header("Lane Movement")]
     // Lane movement
     public float laneOffset = 5.5f;
     public float lateralMoveSpeed = 5.0f;
@@ -29,6 +30,7 @@ public class PaperAirplaneController : MonoBehaviour
     public float bankSpeed = 5f;
     private float targetBankAngle = 0f;
 
+    [Header("Energy System")]
     // Energy System
     public bool isHoldingLeft = false;
     public bool isHoldingRight = false;
@@ -48,6 +50,11 @@ public class PaperAirplaneController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
 
+        gameManager = GameManager.Instance;
+        if (gameManager == null)
+        {
+            Debug.LogError("GameManager not found!");
+        }
     }
 
 
@@ -57,9 +64,10 @@ public class PaperAirplaneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Launching Plane
         if (Input.GetMouseButtonDown(0) && !launched)
         {
-            launched = true;
+            IsLaunched();
             rb.velocity = transform.forward * speed;
         }
 
@@ -106,6 +114,29 @@ public class PaperAirplaneController : MonoBehaviour
         }
 
     }
+
+
+    public void EnableGravity()
+    {
+        gravityActive = true;
+    }
+
+    public void DisableGravity()
+    {
+        gravityActive = false;
+    }
+
+    public void IsLaunched()
+    {
+        launched = true;
+    }
+
+    public void NotLaunched()
+    {
+        launched = false;
+    }
+
+
 
 
     public void MoveToLeftLane()
@@ -163,19 +194,40 @@ public class PaperAirplaneController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         // Crashing on the ground
-        if (collision.gameObject.CompareTag("Ground") && gravityActive)
+        if ((collision.gameObject.CompareTag("Ground") && gravityActive) || collision.gameObject.CompareTag("Obstacle"))
         {
-            Debug.Log("Plane Crashed");
-            Time.timeScale = 0f;
-            rb.velocity = Vector3.zero;
-            gravityActive = false;
-            launched = false;
-            PersistentMenuManager.Instance.OpenCrashMenu();
-
+            CrashConditions();
         }
     }
 
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("EnergyRestock"))
+        {
+            if (gameManager != null && gameManager.energySlider != null)
+            {
+                gameManager.energySlider.value = 1f;
+                Debug.Log("Energy refilled!");
+            }
+            else
+            {
+                Debug.LogWarning("GameManager or energySlider is missing.");
+            }
+        }
+    }
+
+
+
+    public void CrashConditions()
+    {
+        Debug.Log("Plane Crashed");
+        Time.timeScale = 0f;
+        rb.velocity = Vector3.zero;
+        DisableGravity();
+        NotLaunched();
+        PersistentMenuManager.Instance.OpenCrashMenu();
+    }
 
 
 

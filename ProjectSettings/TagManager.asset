@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - EnergySlider
+  - Obstacle
+  - EnergyRestock
   layers:
   - Default
   - TransparentFX

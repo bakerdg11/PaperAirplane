@@ -10,9 +10,6 @@ public class MainMenu : MonoBehaviour
     public Button settingsButton;
     public Button quitButton;
 
-    public GameObject mainMenu;
-
-
     void Awake()
     {
 
