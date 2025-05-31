@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -14,10 +15,33 @@ public class GameManager : MonoBehaviour
     public Slider energySlider;
 
     [Header("Gameplay Variables")]
-    public float currency;
+    public int totalAttempts;
     public float speed;
     public float energy; // May not need, may only need energyDepletionRate
     public float energyDepletionRate = 0.5f;
+
+
+    [Header("In Game Pickups/Stats")]
+    public float distanceTravelled;
+    public int distanceTravelledCredits;
+    public int pickupCredits;
+    public int totalCredits;
+
+
+
+    [Header("HUD Menu")]
+    public TMP_Text distanceTravelledText;
+    public TMP_Text pickupCreditsText;
+
+
+    [Header("Crashed Menu Results")]
+    public TMP_Text crashedMenuDistanceTravelledText;
+    public TMP_Text crashedMenuDistanceCreditsText;
+    public TMP_Text crashedMenuPickupCreditsText;
+    public TMP_Text crashedMenuTotalCreditsText;
+
+
+
 
 
     private void Awake()
@@ -50,6 +74,7 @@ public class GameManager : MonoBehaviour
             PersistentMenuManager.Instance.CloseAllMenus();
         }
 
+        pickupCredits = 0;
         SceneManager.LoadScene("2.Level1", LoadSceneMode.Single);
         Time.timeScale = 1f;
 
@@ -79,5 +104,74 @@ public class GameManager : MonoBehaviour
             airplaneController.EnableGravity();
         }
     }
+
+
+
+    public void UpdatePickupCredits(int amount)
+    {
+        pickupCredits += amount;
+
+        if (pickupCreditsText != null)
+        {
+            pickupCreditsText.text = "Credits: " + pickupCredits;
+        }
+        else
+        {
+            Debug.LogWarning("Pickup Credits Text not assigned");
+        }
+    }
+
+    public void UpdateTotalCredits()
+    {
+        totalCredits += pickupCredits;
+    }
+
+
+
+
+    public void UpdateCrashedMenuStats()
+    {
+        // Distance Travelled Text--------------------------------
+        if (crashedMenuDistanceTravelledText != null)
+        {
+
+        }
+        else
+        {
+            Debug.LogWarning("Distance Travelled Text not assigned");
+        }
+
+        // Distance Credits Text-----------------------------------
+        if (crashedMenuDistanceCreditsText != null)
+        {
+
+        }
+        else
+        {
+            Debug.LogWarning("Distance Credits Text not assigned");
+        }
+
+        // Pickup Credits Text--------------------------------------
+        if (crashedMenuPickupCreditsText != null)
+        {
+            crashedMenuPickupCreditsText.text = "Credits Collected: " + pickupCredits;
+        }
+        else
+        {
+            Debug.LogWarning("Pickup Credits Text not assigned");
+        }
+
+        // Total Credits Text----------------------------------------
+        if (crashedMenuTotalCreditsText != null)
+        {
+            crashedMenuTotalCreditsText.text = "Total Credits: " + totalCredits;
+        }
+        else
+        {
+            Debug.LogWarning("Total Credits Text not assigned");
+        }
+
+    }
+
 
 }

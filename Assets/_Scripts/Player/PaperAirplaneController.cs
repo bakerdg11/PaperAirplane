@@ -25,10 +25,16 @@ public class PaperAirplaneController : MonoBehaviour
     public float laneOffset = 5.5f;
     public float lateralMoveSpeed = 5.0f;
     private float targetX = 0f;
-
+    // Banking
     public float maxBankAngle = 30f;
     public float bankSpeed = 5f;
     private float targetBankAngle = 0f;
+    // Altitude motion
+    public float swipeUpHeight = 8f;
+    public float swipeUpDuration = 1f;
+    private bool isSwipingUp = false;
+    private float swipeUpTimer = 0f;
+    private float originalY = 0f;
 
     [Header("Energy System")]
     // Energy System
@@ -111,6 +117,34 @@ public class PaperAirplaneController : MonoBehaviour
             float newZ = Mathf.Lerp(currentZ, targetBankAngle, bankSpeed * Time.deltaTime);
             Quaternion targetRotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, newZ);
             transform.rotation = targetRotation;
+
+
+            // Gaining Altitude 
+            if (isSwipingUp)
+            {
+                swipeUpTimer += Time.deltaTime;
+
+                float halfDuration = swipeUpDuration / 2f;
+                float t = swipeUpTimer / swipeUpDuration;
+
+                // Use a sine wave for smooth up and down arc
+                float heightOffset = Mathf.Sin(Mathf.PI * t) * swipeUpHeight;
+
+                Vector3 pos = transform.position;
+                pos.y = originalY + heightOffset;
+                transform.position = pos;
+
+                if (swipeUpTimer >= swipeUpDuration)
+                {
+                    isSwipingUp = false;
+                }
+            }
+
+
+
+
+
+
         }
 
     }
@@ -178,7 +212,12 @@ public class PaperAirplaneController : MonoBehaviour
     }
     public void OnSwipeUp()
     {
-
+        if (!isSwipingUp && launched)
+        {
+            isSwipingUp = true;
+            swipeUpTimer = 0f;
+            originalY = transform.position.y;
+        }
     }
     public void OnSwipeDown()
     {
@@ -191,31 +230,14 @@ public class PaperAirplaneController : MonoBehaviour
 
 
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        // Crashing on the ground
-        if ((collision.gameObject.CompareTag("Ground") && gravityActive) || collision.gameObject.CompareTag("Obstacle"))
+        if ((other.CompareTag("Ground") && gravityActive) || other.CompareTag("Obstacle"))
         {
             CrashConditions();
         }
     }
 
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("EnergyRestock"))
-        {
-            if (gameManager != null && gameManager.energySlider != null)
-            {
-                gameManager.energySlider.value = 1f;
-                Debug.Log("Energy refilled!");
-            }
-            else
-            {
-                Debug.LogWarning("GameManager or energySlider is missing.");
-            }
-        }
-    }
 
 
 
@@ -226,6 +248,7 @@ public class PaperAirplaneController : MonoBehaviour
         rb.velocity = Vector3.zero;
         DisableGravity();
         NotLaunched();
+        gameManager.UpdateTotalCredits();
         PersistentMenuManager.Instance.OpenCrashMenu();
     }
 

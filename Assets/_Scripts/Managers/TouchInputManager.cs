@@ -96,17 +96,23 @@ public class TouchInputManager : MonoBehaviour
 
                         if (Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
                         {
-                            if (swipeDelta.x > 100)
+                            if (swipeDelta.x > 50)
                                 airplaneController.OnSwipeRight();
-                            else if (swipeDelta.x < -100)
+                            else if (swipeDelta.x < -50)
                                 airplaneController.OnSwipeLeft();
                         }
                         else
                         {
-                            if (swipeDelta.y > 100)
+                            if (swipeDelta.y > 50)
+                            {
+                                Debug.Log("Swipe Up Detected");
                                 airplaneController.OnSwipeUp();
-                            else if (swipeDelta.y < -100)
+                            }
+                            else if (swipeDelta.y < -50)
+                            {
+                                Debug.Log("Swipe Down Detected");
                                 airplaneController.OnSwipeDown();
+                            }
                         }
 
                         isSwiping = false; // Prevent multiple triggers
