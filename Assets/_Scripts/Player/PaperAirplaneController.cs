@@ -249,6 +249,7 @@ public class PaperAirplaneController : MonoBehaviour
         DisableGravity();
         NotLaunched();
         gameManager.UpdateTotalCredits();
+        gameManager.UpdateCrashedMenuStats();
         PersistentMenuManager.Instance.OpenCrashMenu();
     }
 

@@ -69,6 +69,7 @@ public class CrashedMenu : MonoBehaviour
         if (PersistentMenuManager.Instance != null)
         {
             PersistentMenuManager.Instance.OpenUpgrades();
+            gameManager.UpdateUpgradesMenuStats();
             Debug.Log("Settings Menu Open");
         }
         else

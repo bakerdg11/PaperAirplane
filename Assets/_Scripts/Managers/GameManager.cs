@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     public int totalAttempts;
     public float speed;
     public float energy; // May not need, may only need energyDepletionRate
-    public float energyDepletionRate = 0.5f;
+    public float energyDepletionRate = 0.50f;
 
 
     [Header("In Game Pickups/Stats")]
@@ -40,6 +40,8 @@ public class GameManager : MonoBehaviour
     public TMP_Text crashedMenuPickupCreditsText;
     public TMP_Text crashedMenuTotalCreditsText;
 
+    [Header("Upgrades Menu")]
+    public TMP_Text upgradesMenuTotalCreditsText;
 
 
 
@@ -132,6 +134,7 @@ public class GameManager : MonoBehaviour
     public void UpdateCrashedMenuStats()
     {
         // Distance Travelled Text--------------------------------
+        
         if (crashedMenuDistanceTravelledText != null)
         {
 
@@ -142,6 +145,7 @@ public class GameManager : MonoBehaviour
         }
 
         // Distance Credits Text-----------------------------------
+        
         if (crashedMenuDistanceCreditsText != null)
         {
 
@@ -172,6 +176,28 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
+
+    public void UpdateUpgradesMenuStats()
+    {
+        if (upgradesMenuTotalCreditsText != null)
+        {
+            upgradesMenuTotalCreditsText.text = "Credits: " + totalCredits;
+        }
+    }
+
+
+    public void UpgradeEnergyDepletionRate()
+    {
+        if (totalCredits >= 10)
+        {
+            energyDepletionRate -= 0.01f;
+            totalCredits -= 10;
+            UpdateUpgradesMenuStats();
+        }
+
+    }
+
 
 
 }
