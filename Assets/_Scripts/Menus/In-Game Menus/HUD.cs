@@ -6,15 +6,20 @@ using UnityEngine.UI;
 
 public class HUD : MonoBehaviour
 {
-    public Button pauseButton;
+    public GameManager gameManager;
 
     public Button steerLeftButton;
     public Button steerRightButton;
+
+    public Button pauseButton;
+    public Button pauseEnergyDepletion;
+
 
     // Start is called before the first frame update
     void Start()
     {
         pauseButton.onClick.AddListener(OnPauseButtonPressed);
+        pauseEnergyDepletion.onClick.AddListener(OnPauseEnergyDepletionButtonPressed);
     }
 
     public void OnPauseButtonPressed()
@@ -28,11 +33,16 @@ public class HUD : MonoBehaviour
         {
             Debug.LogWarning("PersistentMenuManager not found.");
         }
-
-
-
-
     }
+
+
+    public void OnPauseEnergyDepletionButtonPressed()
+    {
+        gameManager.EnergyDepletionPaused();
+    }
+
+
+
 
 
 

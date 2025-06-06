@@ -20,6 +20,13 @@ public class GameManager : MonoBehaviour
     public float energy; // May not need, may only need energyDepletionRate
     public float energyDepletionRate = 0.50f;
 
+    [Header("Pause Energy Depletion Variables")]
+    public float energyPauseDuration = 5f;
+    public bool energyDepletionPaused = false;
+    private Coroutine energyPauseCoroutine;
+    public Slider energyPauseSlider;
+
+
 
     [Header("In Game Pickups/Stats")]
     public float distanceTravelled;
@@ -93,12 +100,17 @@ public class GameManager : MonoBehaviour
         if (airplaneController == null || energySlider == null) return;
 
         // Depleting energy bar
-        if (airplaneController.launched &&
-            (airplaneController.isHoldingLeft || airplaneController.isHoldingRight))
+        if (!energyDepletionPaused)
         {
-            energySlider.value -= energyDepletionRate * Time.deltaTime;
-            energySlider.value = Mathf.Max(energySlider.value, 0);
+            if (airplaneController.launched &&
+            (airplaneController.isHoldingLeft || airplaneController.isHoldingRight))
+            {
+                energySlider.value -= energyDepletionRate * Time.deltaTime;
+                energySlider.value = Mathf.Max(energySlider.value, 0);
+            }
         }
+        
+
 
         // Energy Depleted. Enable Gravity
         if (energySlider.value <= 0)
@@ -195,9 +207,61 @@ public class GameManager : MonoBehaviour
             totalCredits -= 10;
             UpdateUpgradesMenuStats();
         }
+    }
 
+    public void UpgradePauseEnergyDepletionRate()
+    {
+        if (totalCredits >= 10)
+        {
+            energyPauseDuration += 1;
+            totalCredits -= 10;
+            UpdateUpgradesMenuStats();
+        }
     }
 
 
+    public void EnergyDepletionPaused()
+    {
+        // If already running a pause, restart the timer
+        if (energyPauseCoroutine != null)
+            StopCoroutine(energyPauseCoroutine);
 
+        energyPauseCoroutine = StartCoroutine(PauseEnergyDepletionForSeconds(energyPauseDuration));
+    }
+
+    private IEnumerator PauseEnergyDepletionForSeconds(float duration)
+    {
+        energyDepletionPaused = true;
+
+        // Enable slider and reset value
+        if (energyPauseSlider != null)
+        {
+            energyPauseSlider.gameObject.SetActive(true);
+            energyPauseSlider.value = 1f;
+        }
+
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            if (energyPauseSlider != null)
+                energyPauseSlider.value = Mathf.Lerp(1f, 0f, elapsed / duration);
+
+            yield return null;
+        }
+
+        // Hide slider and reset
+        if (energyPauseSlider != null)
+        {
+            energyPauseSlider.value = 0f;
+            energyPauseSlider.gameObject.SetActive(false);
+        }
+
+        energyDepletionPaused = false;
+        energyPauseCoroutine = null;
+    }
 }
+
+
+

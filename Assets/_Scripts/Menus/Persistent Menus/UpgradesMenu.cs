@@ -10,6 +10,7 @@ public class UpgradesMenu : MonoBehaviour
 
 
     public Button upgradeEnergyDepletionRateButton;
+    public Button upgradePauseEnergyDepletionButton;
     
     
     public Button upgradesBackButton;
@@ -17,6 +18,8 @@ public class UpgradesMenu : MonoBehaviour
     void Start()
     {
         upgradeEnergyDepletionRateButton.onClick.AddListener(OnUpgradeEnergyDepletionRateButtonPressed);
+        upgradePauseEnergyDepletionButton.onClick.AddListener(OnUpgradePauseEnergyDepletionButtonPressed);
+
         upgradesBackButton.onClick.AddListener(OnBackButtonPressed);
     }
 
@@ -25,6 +28,18 @@ public class UpgradesMenu : MonoBehaviour
     {
         gameManager.UpgradeEnergyDepletionRate();
     }
+
+    private void OnUpgradePauseEnergyDepletionButtonPressed()
+    {
+        gameManager.UpgradePauseEnergyDepletionRate();
+    }
+
+
+
+
+
+
+
 
 
 
