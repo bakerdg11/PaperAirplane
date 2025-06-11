@@ -16,9 +16,18 @@ public class PaperAirplaneController : MonoBehaviour
     [Header("Plane Physics")]
     // Plane Physics
     public bool launched = false;
-    public float speed = 10f;
     public bool gravityActive = false;
-    public float gravityStrength = 0.5f;
+    public float gravityStrength = 1f;
+
+
+    [Header("Speeds")]
+    public float baseSpeed = 10f;
+    public float currentSpeed;
+    public float boostSpeed = 50f;
+    public float dashSpeed = 75f;
+    public bool isBoosting = false;
+    public bool isDashing = false;
+
 
     [Header("Lane Movement")]
     // Lane movement
@@ -35,6 +44,12 @@ public class PaperAirplaneController : MonoBehaviour
     private bool isSwipingUp = false;
     private float swipeUpTimer = 0f;
     private float originalY = 0f;
+
+
+    [Header("Missiles")]
+    public Transform missileSpawnPoint;
+    public GameObject missilePrefab;
+
 
     [Header("Energy System")]
     // Energy System
@@ -61,6 +76,8 @@ public class PaperAirplaneController : MonoBehaviour
         {
             Debug.LogError("GameManager not found!");
         }
+
+        currentSpeed = baseSpeed;
     }
 
 
@@ -74,7 +91,7 @@ public class PaperAirplaneController : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && !launched)
         {
             IsLaunched();
-            rb.velocity = transform.forward * speed;
+            rb.velocity = transform.forward * currentSpeed;
         }
 
         if (launched)
@@ -141,13 +158,30 @@ public class PaperAirplaneController : MonoBehaviour
             }
 
 
-
-
-
-
         }
 
     }
+
+
+
+    void FixedUpdate()
+    {
+        if (launched)
+        {
+            Vector3 velocity = transform.forward * currentSpeed;
+
+            // Add gravity only if it's active
+            if (gravityActive)
+            {
+                velocity += Vector3.down * gravityStrength;
+            }
+
+            rb.velocity = velocity;
+        }
+    }
+
+
+
 
 
     public void EnableGravity()
@@ -229,13 +263,36 @@ public class PaperAirplaneController : MonoBehaviour
     }
 
 
+    public void FireMissile()
+    {
+        if (missilePrefab != null && missileSpawnPoint != null)
+        {
+            Instantiate(missilePrefab, missileSpawnPoint.position, missileSpawnPoint.rotation);
+        }
+    }
+
+
 
     private void OnTriggerEnter(Collider other)
     {
-        if ((other.CompareTag("Ground") && gravityActive) || other.CompareTag("Obstacle"))
+
+        if ((other.CompareTag("Ground") && gravityActive))
         {
             CrashConditions();
         }
+
+
+
+        if (other.CompareTag("Obstacle"))
+        {
+            if (!gameManager.invincibleEnabled)
+            {
+                CrashConditions();
+            }
+        }
+
+
+
     }
 
 
@@ -252,6 +309,60 @@ public class PaperAirplaneController : MonoBehaviour
         gameManager.UpdateCrashedMenuStats();
         PersistentMenuManager.Instance.OpenCrashMenu();
     }
+
+
+
+
+
+    // ----------------- BOOST ABILITY ----------------
+    public void AirplaneBoost()
+    {
+        isBoosting = true;
+        UpdateCurrentSpeed();
+    }
+
+    public void AirplaneBoostEnd()
+    {
+        isBoosting = false;
+        UpdateCurrentSpeed();
+    }
+
+
+
+    // ------------------ DASH ABILITY -----------------
+    public void AirplaneDash()
+    {
+        isDashing = true;
+        UpdateCurrentSpeed();
+    }
+
+    public void AirplaneDashEnd()
+    {
+        isDashing = false;
+        UpdateCurrentSpeed();
+    }
+
+
+    private void UpdateCurrentSpeed()
+    {
+        if (isDashing)
+        {
+            currentSpeed = dashSpeed;
+            isBoosting = false; // Cancel boost if dash is active
+        }
+        else if (isBoosting)
+        {
+            currentSpeed = boostSpeed;
+        }
+        else
+        {
+            currentSpeed = baseSpeed;
+        }
+
+        Debug.Log($"[Speed Update] Dashing: {isDashing}, Boosting: {isBoosting}, Speed: {currentSpeed}");
+    }
+
+
 
 
 
