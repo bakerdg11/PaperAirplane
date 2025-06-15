@@ -7,37 +7,50 @@ using UnityEngine.UI;
 public class UpgradesMenu : MonoBehaviour
 {
     public GameManager gameManager;
+    public AbilitiesManager abilitiesManager;
 
 
-    public Button upgradeEnergyDepletionRateButton;
-    public Button upgradePauseEnergyDepletionButton;
+    public Button upgradeStatsButton;
+    public Button upgradeAbilitiesButton;
     
     
     public Button upgradesBackButton;
 
     void Start()
     {
-        upgradeEnergyDepletionRateButton.onClick.AddListener(OnUpgradeEnergyDepletionRateButtonPressed);
-        upgradePauseEnergyDepletionButton.onClick.AddListener(OnUpgradePauseEnergyDepletionButtonPressed);
+        upgradeStatsButton.onClick.AddListener(OnUpgradeStatsButtonPressed);
+        upgradeAbilitiesButton.onClick.AddListener(OnUpgradeAbilitiesButtonPressed);
 
         upgradesBackButton.onClick.AddListener(OnBackButtonPressed);
     }
 
 
-    private void OnUpgradeEnergyDepletionRateButtonPressed()
+    private void OnUpgradeStatsButtonPressed()
     {
-        gameManager.UpgradeEnergyDepletionRate();
+        if (PersistentMenuManager.Instance != null)
+        {
+            PersistentMenuManager.Instance.OpenUpgradeStats();
+            Debug.Log("Upgrade Stats Menu Open");
+        }
+        else
+        {
+            Debug.LogWarning("PersistentMenuManager not found.");
+        }
     }
 
-    private void OnUpgradePauseEnergyDepletionButtonPressed()
+
+    private void OnUpgradeAbilitiesButtonPressed()
     {
-        gameManager.UpgradePauseEnergyDepletionRate();
+        if (PersistentMenuManager.Instance != null)
+        {
+            PersistentMenuManager.Instance.OpenUpgradeAbilities();
+            Debug.Log("Upgrade Abilities Menu Open");
+        }
+        else
+        {
+            Debug.LogWarning("PersistentMenuManager not found.");
+        }
     }
-
-
-
-
-
 
 
 

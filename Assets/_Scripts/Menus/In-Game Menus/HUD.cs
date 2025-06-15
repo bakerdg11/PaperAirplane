@@ -8,6 +8,9 @@ public class HUD : MonoBehaviour
 {
     public GameManager gameManager;
     public PaperAirplaneController airplaneController;
+    public AbilitiesManager abilitiesManager;
+
+    public Slider energySlider;
 
     public Button steerLeftButton;
     public Button steerRightButton;
@@ -74,62 +77,92 @@ public class HUD : MonoBehaviour
     // ----------------------ABILITY BUTTONS-----------------------
     public void OnPauseEnergyDepletionButtonPressed()
     {
-        if (gameManager.energyDepletionPaused)
+        if (abilitiesManager.energyDepletionPaused)
         {
             return;
         }
         else
         {
-            gameManager.EnergyDepletionPaused();
+            if (abilitiesManager.pauseEnergyAmmo >= 1)
+            {
+                abilitiesManager.EnergyDepletionPaused();
+                abilitiesManager.pauseEnergyAmmo -= 1;
+                abilitiesManager.UpdateAmmoUI();
+            }
+
         }
     }
 
     public void OnBoostButtonPressed()
     {
-        if (gameManager.boostEnabled || gameManager.dashEnabled)
+        if (abilitiesManager.boostEnabled || abilitiesManager.dashEnabled)
         {
             return;
         }
         else
         {
-            gameManager.Boost();
+            if (abilitiesManager.boostAmmo >= 1)
+            {
+                abilitiesManager.Boost();
+                abilitiesManager.boostAmmo -= 1;
+                abilitiesManager.UpdateAmmoUI();
+            }
+
         }
     }
 
     public void OnInvincibleButtonPressed()
     {
-        if (gameManager.invincibleEnabled)
+        if (abilitiesManager.invincibleEnabled)
         {
             return;
         }
         else
         {
-            gameManager.Invincible();
+            if (abilitiesManager.invincibilityAmmo >= 1)
+            {
+                abilitiesManager.Invincible();
+                abilitiesManager.invincibilityAmmo -= 1;
+                abilitiesManager.UpdateAmmoUI();
+            }
+
         }
     }
 
     public void OnDashButtonPressed()
     {
-        if (gameManager.dashEnabled || gameManager.boostEnabled)
+        if (abilitiesManager.dashEnabled || abilitiesManager.boostEnabled)
         {
             return;
         }
         else
         {
-            gameManager.Dash();
+            if (abilitiesManager.dashAmmo >= 1)
+            {
+                abilitiesManager.Dash();
+                abilitiesManager.dashAmmo -= 1;
+                abilitiesManager.UpdateAmmoUI();
+            }
+
         }
     }
 
     public void OnMissileLaunchButtonPressed()
     {
-        if (gameManager.missileFired)
+        if (abilitiesManager.missileFired)
         {
             return;
         }
         else
         {
-            gameManager.Missile();
-            airplaneController.FireMissile();
+            if (abilitiesManager.missileAmmo >= 1)
+            {
+                abilitiesManager.Missile();
+                airplaneController.FireMissile();
+                abilitiesManager.missileAmmo -= 1;
+                abilitiesManager.UpdateAmmoUI();
+            }
+
         }
 
     }

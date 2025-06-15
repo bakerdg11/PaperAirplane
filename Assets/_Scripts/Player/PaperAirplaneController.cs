@@ -4,21 +4,21 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using UnityEngine.UIElements;
+
 
 public class PaperAirplaneController : MonoBehaviour
 {
     public static PaperAirplaneController Instance;
-    public GameManager gameManager;
-
     private Rigidbody rb;
 
+    public GameManager gameManager;
+    public AbilitiesManager abilitiesManager;
+
+
     [Header("Plane Physics")]
-    // Plane Physics
     public bool launched = false;
     public bool gravityActive = false;
     public float gravityStrength = 1f;
-
 
     [Header("Speeds")]
     public float baseSpeed = 10f;
@@ -44,6 +44,12 @@ public class PaperAirplaneController : MonoBehaviour
     private bool isSwipingUp = false;
     private float swipeUpTimer = 0f;
     private float originalY = 0f;
+
+
+    [Header("Energy")]
+    public Slider energySlider;
+    public float energyDepletionRate = 0.50f;
+
 
 
     [Header("Missiles")]
@@ -76,6 +82,23 @@ public class PaperAirplaneController : MonoBehaviour
         {
             Debug.LogError("GameManager not found!");
         }
+
+        HUD hud = FindObjectOfType<HUD>();
+        if (hud != null)
+        {
+            energySlider = hud.energySlider;
+        }
+        else
+        {
+            Debug.LogWarning("HUD not found in scene. Make sure it's marked as DontDestroyOnLoad.");
+        }
+
+        abilitiesManager = FindObjectOfType<AbilitiesManager>();
+        if (abilitiesManager == null)
+        {
+            Debug.LogWarning("AbilitiesManager not found. Make sure it persists across scenes.");
+        }
+
 
         currentSpeed = baseSpeed;
     }
@@ -156,6 +179,29 @@ public class PaperAirplaneController : MonoBehaviour
                     isSwipingUp = false;
                 }
             }
+
+
+
+
+            // Energy Bar Depletion
+            if (!abilitiesManager.energyDepletionPaused)
+            {
+                if (launched && (isHoldingLeft || isHoldingRight))
+                {
+                    energySlider.value -= energyDepletionRate * Time.deltaTime;
+                    energySlider.value = Mathf.Max(energySlider.value, 0);
+                }
+            }
+
+            // Energy Depleted. Enable Gravity
+            if (energySlider.value <= 0)
+            {
+                EnableGravity();
+            }
+
+
+
+
 
 
         }
@@ -285,7 +331,7 @@ public class PaperAirplaneController : MonoBehaviour
 
         if (other.CompareTag("Obstacle"))
         {
-            if (!gameManager.invincibleEnabled)
+            if (!abilitiesManager.invincibleEnabled)
             {
                 CrashConditions();
             }

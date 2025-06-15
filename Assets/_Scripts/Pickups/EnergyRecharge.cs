@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnergyReplenish : MonoBehaviour
 {
     public GameManager gameManager;
+    public PaperAirplaneController airplaneController;
 
     public float rotationSpeed = 120f;
 
@@ -23,9 +24,9 @@ public class EnergyReplenish : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (gameManager != null && gameManager.energySlider != null)
+            if (airplaneController != null && airplaneController.energySlider != null)
             {
-                gameManager.energySlider.value = 1f;
+                airplaneController.energySlider.value = 1f;
                 Destroy(gameObject);
                 Debug.Log("Energy refilled!");
             }

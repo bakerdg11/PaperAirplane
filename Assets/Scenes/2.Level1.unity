@@ -6464,6 +6464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
+  abilitiesManager: {fileID: 0}
   launched: 0
   gravityActive: 0
   gravityStrength: 0.5
@@ -6479,6 +6480,8 @@ MonoBehaviour:
   bankSpeed: 5
   swipeUpHeight: 8
   swipeUpDuration: 1
+  energySlider: {fileID: 0}
+  energyDepletionRate: 0.5
   missileSpawnPoint: {fileID: 604996361}
   missilePrefab: {fileID: 5687845046029957013, guid: c9d0264bdb404544195ab3ee2fadca11, type: 3}
   isHoldingLeft: 0
@@ -6972,6 +6975,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
+  airplaneController: {fileID: 1478510132}
   rotationSpeed: 120
 --- !u!1 &4897757373731593316
 GameObject:

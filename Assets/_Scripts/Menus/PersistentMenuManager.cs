@@ -11,6 +11,8 @@ public class PersistentMenuManager : MonoBehaviour
     public GameObject settingsMenu;
     public GameObject statisticsMenu;
     public GameObject upgradesMenu;
+    public GameObject upgradeStatsMenu;
+    public GameObject upgradeAbilitiesMenu;
     public GameObject pauseMenu;
     public GameObject crashMenu;
     public GameObject hudMenu;
@@ -65,6 +67,14 @@ public class PersistentMenuManager : MonoBehaviour
     public void OpenUpgrades()
     {
         OpenMenu(upgradesMenu);
+    }
+    public void OpenUpgradeStats()
+    {
+        OpenMenu(upgradeStatsMenu);
+    }
+    public void OpenUpgradeAbilities()
+    {
+        OpenMenu(upgradeAbilitiesMenu);
     }
     public void OpenHUD()
     {
@@ -138,6 +148,8 @@ public class PersistentMenuManager : MonoBehaviour
         settingsMenu?.SetActive(false);
         statisticsMenu?.SetActive(false);
         upgradesMenu?.SetActive(false);
+        upgradeStatsMenu?.SetActive(false);
+        upgradeAbilitiesMenu?.SetActive(false);
         pauseMenu?.SetActive(false);
         crashMenu?.SetActive(false);
         hudMenu?.SetActive(false);
