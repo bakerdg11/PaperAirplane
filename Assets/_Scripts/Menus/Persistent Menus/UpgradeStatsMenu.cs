@@ -9,6 +9,7 @@ public class UpgradeStatsMenu : MonoBehaviour
     public AbilitiesManager abilitiesManager;
 
     public Button upgradeEnergyDepletionRateButton;
+    public Button upgradeLaneChangeSpeedButton;
 
 
     public Button upgradesBackButton;
@@ -16,6 +17,7 @@ public class UpgradeStatsMenu : MonoBehaviour
     void Start()
     {
         upgradeEnergyDepletionRateButton.onClick.AddListener(OnUpgradeEnergyDepletionRateButtonPressed);
+        upgradeLaneChangeSpeedButton.onClick.AddListener(OnUpgradeLaneChangeSpeedButtonPressed);
 
         upgradesBackButton.onClick.AddListener(OnBackButtonPressed);
     }
@@ -25,7 +27,10 @@ public class UpgradeStatsMenu : MonoBehaviour
         abilitiesManager.UpgradeEnergyDepletionRate();
     }
 
-
+    private void OnUpgradeLaneChangeSpeedButtonPressed()
+    {
+        abilitiesManager.UpgradeLaneChangeSpeed();
+    }
 
 
 

@@ -9,7 +9,7 @@ public class UpgradesMenu : MonoBehaviour
     public GameManager gameManager;
     public AbilitiesManager abilitiesManager;
 
-
+    public Button buyAbilityPointButton;
     public Button upgradeStatsButton;
     public Button upgradeAbilitiesButton;
     
@@ -18,12 +18,17 @@ public class UpgradesMenu : MonoBehaviour
 
     void Start()
     {
+        buyAbilityPointButton.onClick.AddListener(OnBuyAbilityPointButtonPressed);
         upgradeStatsButton.onClick.AddListener(OnUpgradeStatsButtonPressed);
         upgradeAbilitiesButton.onClick.AddListener(OnUpgradeAbilitiesButtonPressed);
 
         upgradesBackButton.onClick.AddListener(OnBackButtonPressed);
     }
 
+    private void OnBuyAbilityPointButtonPressed()
+    {
+        gameManager.BuyAbilityPoint();
+    }
 
     private void OnUpgradeStatsButtonPressed()
     {

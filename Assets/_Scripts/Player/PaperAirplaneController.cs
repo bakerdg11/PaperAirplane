@@ -32,7 +32,7 @@ public class PaperAirplaneController : MonoBehaviour
     [Header("Lane Movement")]
     // Lane movement
     public float laneOffset = 5.5f;
-    public float lateralMoveSpeed = 5.0f;
+    public float lateralMoveSpeed = 3.0f;
     private float targetX = 0f;
     // Banking
     public float maxBankAngle = 30f;
@@ -48,7 +48,7 @@ public class PaperAirplaneController : MonoBehaviour
 
     [Header("Energy")]
     public Slider energySlider;
-    public float energyDepletionRate = 0.50f;
+    public float energyDepletionRate = 0.5f;
 
 
 
@@ -331,11 +331,12 @@ public class PaperAirplaneController : MonoBehaviour
 
         if (other.CompareTag("Obstacle"))
         {
-            if (!abilitiesManager.invincibleEnabled)
+            if (!abilitiesManager.invincibleEnabled && !abilitiesManager.dashEnabled)
             {
                 CrashConditions();
             }
         }
+
 
 
 
@@ -353,6 +354,7 @@ public class PaperAirplaneController : MonoBehaviour
         NotLaunched();
         gameManager.UpdateTotalCredits();
         gameManager.UpdateCrashedMenuStats();
+        abilitiesManager.GameEndAmmoAmmounts();
         PersistentMenuManager.Instance.OpenCrashMenu();
     }
 

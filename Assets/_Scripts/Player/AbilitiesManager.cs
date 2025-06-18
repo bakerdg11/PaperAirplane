@@ -13,17 +13,17 @@ public class AbilitiesManager : MonoBehaviour
 
     // ------------------------------------ABILITIES ---------------------------------------
     [Header("Pause Energy Depletion Variables")]
-    public float energyPauseDuration = 5.0f;
+    public float energyPauseDuration = 2.0f;
     public bool energyDepletionPaused = false;
     private Coroutine energyPauseCoroutine;
     public Slider energyPauseSlider;
     [Header("Boost Variables")]
-    public float boostDuration = 5.0f;
+    public float boostDuration = 2.0f;
     public bool boostEnabled = false;
     private Coroutine boostCoroutine;
     public Slider boostSlider;
     [Header("Invincible Variables")]
-    public float invincibleDuration = 5.0f;
+    public float invincibleDuration = 2.0f;
     public bool invincibleEnabled = false;
     private Coroutine invincibleCoroutine;
     public Slider invincibleSlider;
@@ -33,7 +33,7 @@ public class AbilitiesManager : MonoBehaviour
     private Coroutine dashCoroutine;
     public Slider dashSlider;
     [Header("Missile Variables")]
-    public float missileCooldown = 5.0f;
+    public float missileCooldown = 0.5f;
     public bool missileFired = false;
     private Coroutine missileCooldownCoroutine;
     public Slider missileSliderLeft;
@@ -42,10 +42,16 @@ public class AbilitiesManager : MonoBehaviour
 
     [Header("In Game Abilities")]
     public int pauseEnergyAmmo = 1;
-    public int boostAmmo = 1;
-    public int invincibilityAmmo = 1;
+    public int boostAmmo = 0;
+    public int invincibilityAmmo = 0;
     public int dashAmmo = 1;
-    public int missileAmmo = 1;
+    public int missileAmmo = 0;
+
+    public int tempPauseEnergyAmmo;
+    public int tempBoostAmmo;
+    public int tempInvincibilityAmmo;
+    public int tempDashAmmo;
+    public int tempMissileAmmo;
 
 
     [Header("HUD Abilities Ammo Numbers")]
@@ -81,6 +87,27 @@ public class AbilitiesManager : MonoBehaviour
     public TMP_Text missileAmmoCurrent;
     public TMP_Text missileAmmoMax;
 
+    public int pedLengthCurrentLevel;
+    public int pedLengthMaxLevel;
+    public int pedAmmoCurrentLevel;
+    public int pedAmmoMaxLevel;
+
+    public int boostLengthCurrentLevel;
+    public int boostLengthMaxLevel;
+    public int boostAmmoCurrentLevel;
+    public int boostAmmoMaxLevel;
+
+    public int invincibilityLengthCurrentLevel;
+    public int invincibilityLengthMaxLevel;
+    public int invincibilityAmmoCurrentLevel;
+    public int invincibilityAmmoMaxLevel;
+
+    public int dashAmmoCurrentLevel;
+    public int dashAmmoMaxLevel;
+
+    public int missileAmmoCurrentLevel;
+    public int missileAmmoMaxLevel;
+
 
 
     void Awake()
@@ -105,8 +132,95 @@ public class AbilitiesManager : MonoBehaviour
             Debug.LogWarning("PaperAirplaneController not found in scene " + scene.name);
         }
 
+
+
+
+        switch (scene.name)
+        {
+            case "1.MainMenu":
+                pedLengthCurrentLevel = 0;
+                pedLengthMaxLevel = 6;
+                pedAmmoCurrentLevel = 4;
+                pedAmmoMaxLevel = 3;
+
+                boostLengthCurrentLevel = 0;
+                boostLengthMaxLevel = 6;
+                boostAmmoCurrentLevel = 0;
+                boostAmmoMaxLevel = 2;
+
+                invincibilityLengthCurrentLevel = 0;
+                invincibilityLengthMaxLevel = 6;
+                invincibilityAmmoCurrentLevel = 0;
+                invincibilityAmmoMaxLevel = 2;
+
+                dashAmmoCurrentLevel = 1;
+                dashAmmoMaxLevel = 3;
+
+                missileAmmoCurrentLevel = 0;
+                missileAmmoMaxLevel = 5;
+                break;
+
+            case "2.Level1":
+                Debug.Log("Scene 2 loaded (Level 1): " + scene.name);
+                pedLengthCurrentLevel = 0;
+                pedLengthMaxLevel = 6;
+                pedAmmoCurrentLevel = 4;
+                pedAmmoMaxLevel = 3;
+
+                boostLengthCurrentLevel = 0;
+                boostLengthMaxLevel = 6;
+                boostAmmoCurrentLevel = 0;
+                boostAmmoMaxLevel = 2;
+
+                invincibilityLengthCurrentLevel = 0;
+                invincibilityLengthMaxLevel = 6;
+                invincibilityAmmoCurrentLevel = 0;
+                invincibilityAmmoMaxLevel = 2;
+
+                dashAmmoCurrentLevel = 1;
+                dashAmmoMaxLevel = 3;
+
+                missileAmmoCurrentLevel = 0;
+                missileAmmoMaxLevel = 5;
+                break;
+            /*
+        case "3.Level2":
+            pedLengthCurrentLevel = 2;
+            pedAmmoCurrentLevel = 1;
+            boostLengthCurrentLevel = 2;
+            boostAmmoCurrentLevel = 1;
+            invincibilityLengthCurrentLevel = 1;
+            invincibilityAmmoCurrentLevel = 1;
+            dashAmmoCurrentLevel = 2;
+            missileAmmoCurrentLevel = 1;
+            break;
+
+        case "4.BossFight":
+            pedLengthCurrentLevel = 6;
+            pedAmmoCurrentLevel = 3;
+            boostLengthCurrentLevel = 6;
+            boostAmmoCurrentLevel = 2;
+            invincibilityLengthCurrentLevel = 6;
+            invincibilityAmmoCurrentLevel = 2;
+            dashAmmoCurrentLevel = 3;
+            missileAmmoCurrentLevel = 5;
+            break;
+                            */
+            default:
+                Debug.Log("No ability config for scene: " + scene.name);
+                break;
+
+        }
+
+
         UpdateAmmoUI();
+        UpdateAbilityLevelsText();
     }
+
+
+
+
+
 
 
 
@@ -129,6 +243,24 @@ public class AbilitiesManager : MonoBehaviour
 
         if (rightMissileAmmoText != null)
             rightMissileAmmoText.text = missileAmmo.ToString();
+    }
+
+    public void GameStartAmmoAmounts()
+    {
+        tempPauseEnergyAmmo = pauseEnergyAmmo;
+        tempBoostAmmo = boostAmmo;
+        tempInvincibilityAmmo = invincibilityAmmo;
+        tempDashAmmo = dashAmmo;
+        tempMissileAmmo = missileAmmo;
+    }
+
+    public void GameEndAmmoAmmounts()
+    {
+        pauseEnergyAmmo = tempPauseEnergyAmmo;
+        boostAmmo = tempBoostAmmo;
+        invincibilityAmmo = tempInvincibilityAmmo;
+        dashAmmo = tempDashAmmo;
+        missileAmmo = tempMissileAmmo;
     }
 
 
@@ -393,7 +525,12 @@ public class AbilitiesManager : MonoBehaviour
 
     public void UpgradeLaneChangeSpeed()
     {
-
+        if (gameManager.totalCredits >= 10)
+        {
+            airplaneController.lateralMoveSpeed += 0.5f;
+            gameManager.totalCredits -= 10;
+            gameManager.UpdateUpgradesMenuStats();
+        }
     }
 
 
@@ -402,52 +539,151 @@ public class AbilitiesManager : MonoBehaviour
     // Upgrading Abilities ----------------------------------------
     public void UpgradePauseEnergyDepletionLength()
     {
-        if (gameManager.totalCredits >= 10)
+        if (gameManager.totalAbilityPoints >= 1)
         {
-            energyPauseDuration += 1;
-            gameManager.totalCredits -= 10;
-            gameManager.UpdateUpgradesMenuStats();
+            Debug.Log("Ability points available");
+            if (pedLengthCurrentLevel < pedLengthMaxLevel)
+            {
+                Debug.Log("PedLengthCurrentlevel available");
+                energyPauseDuration += 1;
+                gameManager.totalAbilityPoints -= 1;
+                pedLengthCurrentLevel += 1;
+                gameManager.UpdateUpgradesMenuStats();
+                UpdateAbilityLevelsText();
+            }
+
         }
     }
 
     public void UpgradePauseEnergyDepletionAmmo()
     {
+        if (gameManager.totalAbilityPoints >= 1)
+        {
+            if (pedAmmoCurrentLevel < pedAmmoMaxLevel)
+            {
+                pauseEnergyAmmo += 1;
+                gameManager.totalAbilityPoints -= 1;
+                pedAmmoCurrentLevel += 1;
+                gameManager.UpdateUpgradesMenuStats();
+                UpdateAbilityLevelsText();
+            }
 
+        }
     }
 
     public void UpgradeBoostLength()
     {
+        if (gameManager.totalAbilityPoints >= 1)
+        {
+            if (boostLengthCurrentLevel < boostLengthMaxLevel)
+            {
+                boostDuration += 0.2f;
+                gameManager.totalAbilityPoints -= 1;
+                boostLengthCurrentLevel += 1;
+                gameManager.UpdateUpgradesMenuStats();
+                UpdateAbilityLevelsText();
+            }
 
+        }
     }
 
     public void UpgradeBoostAmmo()
     {
+        if (gameManager.totalAbilityPoints >= 1)
+        {
+            if (boostAmmoCurrentLevel < boostAmmoMaxLevel)
+            {
+                boostAmmo += 1;
+                gameManager.totalAbilityPoints -= 1;
+                boostAmmoCurrentLevel += 1;
+                gameManager.UpdateUpgradesMenuStats();
+                UpdateAbilityLevelsText();
+            }
 
+        }
     }
 
     public void UpgradeInvincibilityLength()
     {
+        if (gameManager.totalAbilityPoints >= 1)
+        {
+            if (invincibilityLengthCurrentLevel < invincibilityLengthMaxLevel)
+            {
+                invincibleDuration += 0.2f;
+                gameManager.totalAbilityPoints -= 1;
+                invincibilityLengthCurrentLevel += 1;
+                gameManager.UpdateUpgradesMenuStats();
+                UpdateAbilityLevelsText();
+            }
 
+        }
     }
 
     public void UpgradeInvincibilityAmmo()
     {
+        if (gameManager.totalAbilityPoints >= 1)
+        {
+            if (invincibilityAmmoCurrentLevel < invincibilityAmmoMaxLevel)
+            {
+                invincibilityAmmo += 1;
+                gameManager.totalAbilityPoints -= 1;
+                invincibilityAmmoCurrentLevel += 1;
+                gameManager.UpdateUpgradesMenuStats();
+                UpdateAbilityLevelsText();
+            }
 
+        }
     }
 
     public void UpgradeDashAmmo()
     {
+        if (gameManager.totalAbilityPoints >= 1)
+        {
+            if (dashAmmoCurrentLevel < dashAmmoMaxLevel)
+            {
+                dashAmmo += 1;
+                gameManager.totalAbilityPoints -= 1;
+                dashAmmoCurrentLevel += 1;
+                gameManager.UpdateUpgradesMenuStats();
+                UpdateAbilityLevelsText();
+            }
 
+        }
     }
 
     public void UpgradeMissileAmmo()
     {
+        if (gameManager.totalAbilityPoints >= 1)
+        {
+            if (missileAmmoCurrentLevel < missileAmmoMaxLevel)
+            {
+                missileAmmo += 1;
+                gameManager.totalAbilityPoints -= 1;
+                missileAmmoCurrentLevel += 1;
+                gameManager.UpdateUpgradesMenuStats();
+                UpdateAbilityLevelsText();
+            }
 
+        }
     }
 
 
 
+    public void UpdateAbilityLevelsText()
+    {
+        pedLengthCurrent.text = pedLengthCurrentLevel.ToString();
+        pedAmmoCurrent.text = pedAmmoCurrentLevel.ToString();
 
+        boostLengthCurrent.text = boostLengthCurrentLevel.ToString();
+        boostAmmoCurrent.text = boostAmmoCurrentLevel.ToString();
+
+        invincibilityLengthCurrent.text = invincibilityLengthCurrentLevel.ToString();
+        invincibilityAmmoCurrent.text = invincibilityAmmoCurrentLevel.ToString();
+
+        dashAmmoCurrent.text = dashAmmoCurrentLevel.ToString();
+
+        missileAmmoCurrent.text = missileAmmoCurrentLevel.ToString();
+}
 
 
 

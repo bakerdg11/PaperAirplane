@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
+    public AbilitiesManager abilitiesManager;
+
     public Button startButton;
     public Button statisticsButton;
     public Button upgradesButton;
@@ -34,6 +36,7 @@ public class MainMenu : MonoBehaviour
         if (PersistentMenuManager.Instance != null)
         {
             BeginGame();
+            abilitiesManager.GameStartAmmoAmounts();
         }
         else
         {

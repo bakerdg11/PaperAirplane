@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public int pickupCredits;
     public TMP_Text pickupCreditsText;
     public int totalCredits;
+    public int totalAbilityPoints = 10;
 
 
     [Header("Crashed Menu Results Texts")]
@@ -30,8 +31,9 @@ public class GameManager : MonoBehaviour
 
     [Header("Upgrades Menu")]
     public TMP_Text upgradesMenuTotalCreditsText;
+    public TMP_Text upgradesMenuTotalAbilityPointsText;
     public TMP_Text upgradesStatsMenuTotalCreditsText;
-    public TMP_Text upgradesAbilitiesMenuTotalCreditsText;
+    public TMP_Text upgradesAbilitiesMenuTotalAbilityPointsText;
 
 
 
@@ -162,12 +164,22 @@ public class GameManager : MonoBehaviour
         if (upgradesMenuTotalCreditsText != null)
         {
             upgradesMenuTotalCreditsText.text = "Credits: " + totalCredits;
+            upgradesMenuTotalAbilityPointsText.text = "Ability Points: " + totalAbilityPoints;
             upgradesStatsMenuTotalCreditsText.text = "Credits: " + totalCredits;
-            upgradesAbilitiesMenuTotalCreditsText.text = "Credits: " + totalCredits;
+            upgradesAbilitiesMenuTotalAbilityPointsText.text = "Ability Points: " + totalAbilityPoints;
         }
     }
 
-
+    
+    public void BuyAbilityPoint()
+    {
+        if (totalCredits >= 50)
+        {
+            totalCredits -= 50;
+            totalAbilityPoints += 1;
+            UpdateUpgradesMenuStats();
+        }
+    }
 
 
 

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class CrashedMenu : MonoBehaviour
 {
+    public AbilitiesManager abiltiiesManager;
+
     public Button playAgainButton;
     public Button settingsButton;
     public Button statisticsButton;
@@ -36,6 +38,7 @@ public class CrashedMenu : MonoBehaviour
     public void OnPlayAgainButtonPressed()
     {
         gameManager.RestartLevelScene();
+        abiltiiesManager.GameStartAmmoAmounts();
     }
 
     public void OnSettingsButtonPressed()
